@@ -48,7 +48,7 @@ public class NewsServiceTest {
         categories.add(Category.BUSINESS);
 
         List<Keyword> keywords = new ArrayList<>();
-        keywords.add(new Keyword("Russland"));
+        keywords.add(new Keyword("ist"));
 
         LocalDateTime date = LocalDateTime.now().minusDays(1);
 
