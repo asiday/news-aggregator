@@ -15,11 +15,4 @@ import java.util.List;
  * create your own queries using certain naming convention.
  */
 public interface ArticleRepository extends JpaRepository<Article, Integer> {
-    /**
-     * Create your "dynamic finder" using certain naming convention.
-     * Here it looks for a Author name, that contains parameter "string".
-     * @param string is a letter or part of a string that is a part of the Author name.
-     * @return A list of Articles, that contains this "string" in Author name.
-     */
-    List<Article> findAllByAuthorContaining(String string);
 }
