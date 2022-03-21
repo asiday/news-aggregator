@@ -30,29 +30,6 @@ public class Article {
     public Article() {
     }
 
-    public Article(Integer id, String author, String title, String description,
-                   String url, String urlToImage, LocalDateTime publishedAt, String content) {
-        this.id = id;
-        this.author = author;
-        this.title = title;
-        this.description = description;
-        this.url = url;
-        this.urlToImage = urlToImage;
-        this.publishedAt = publishedAt;
-        this.content = content;
-    }
-
-    public Article(String author, String title, String description,
-                   String url, String urlToImage, LocalDateTime publishedAt, String content) {
-        this.author = author;
-        this.title = title;
-        this.description = description;
-        this.url = url;
-        this.urlToImage = urlToImage;
-        this.publishedAt = publishedAt;
-        this.content = content;
-    }
-
     public Integer getId() {
         return id;
     }

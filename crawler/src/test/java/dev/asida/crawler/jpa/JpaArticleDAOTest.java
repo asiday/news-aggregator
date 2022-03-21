@@ -54,8 +54,14 @@ public class JpaArticleDAOTest {
     @Test
     public void saveTest() {
         LocalDateTime today = LocalDateTime.now();
-        Article article = new Article("author",  "title",  "description",
-                 "url",  "urlToImage", today, "content");
+        Article article = new Article();
+        article.setAuthor("author");
+        article.setTitle("title");
+        article.setDescription("description");
+        article.setUrl("url");
+        article.setUrlToImage("urlToImage");
+        article.setPublishedAt(today);
+        article.setContent("content");
         article = dao.save(article);
         assertThat(article.getId(), is(notNullValue()));
     }
@@ -105,10 +111,5 @@ public class JpaArticleDAOTest {
         getIds().forEach(id -> assertTrue(dao.existsById(id)));
     }
 
-    @Test
-    void findAllByAuthorContainingTest(){
-        List<Article> articles= dao.findAllByAuthorContaining("y");
-        articles.forEach(article -> LOG.info(article.toString()));
-    }
     
 }
