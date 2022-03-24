@@ -2,6 +2,7 @@ package dev.asida.crawler.schedule;
 
 import dev.asida.crawler.configurations.Language;
 import dev.asida.crawler.configurations.RequestContext;
+import dev.asida.crawler.dao.ArticleRepository;
 import dev.asida.crawler.services.NewsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,9 @@ public class ScheduledTaskTest {
     @Mock
     NewsService service;
 
+    @Mock
+    ArticleRepository repository;
+
     @BeforeEach
     void init() {
         MockitoAnnotations.openMocks(this);
@@ -26,7 +30,7 @@ public class ScheduledTaskTest {
         // given
         RequestContext r = new RequestContext();
         r.getLanguages().add(Language.GERMAN);
-        ScheduledTask task = new ScheduledTask(service);
+        ScheduledTask task = new ScheduledTask(service, repository);
 
         // when
         task.requestArticles();

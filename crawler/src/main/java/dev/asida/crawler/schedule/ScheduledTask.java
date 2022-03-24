@@ -2,6 +2,7 @@ package dev.asida.crawler.schedule;
 
 import dev.asida.crawler.configurations.Language;
 import dev.asida.crawler.configurations.RequestContext;
+import dev.asida.crawler.dao.ArticleRepository;
 import dev.asida.crawler.json.Article;
 import dev.asida.crawler.services.NewsService;
 import org.slf4j.Logger;
@@ -18,16 +19,19 @@ import java.util.List;
  * measured from the start time of each invocation.
  * The task will be executed the first time after the initialDelay value = 5 seconds (5000),
  * and it will continue to be executed according to the fixedDelay = 15 minutes (900000).
+ * Constructor with two parameters using both service and repository to SaveAll articles in existing DB.
  */
 @Component
 public class ScheduledTask {
 
     public static final Logger LOG = LoggerFactory.getLogger(ScheduledTask.class);
     private final NewsService service;
+    private final ArticleRepository repository;
 
     @Autowired
-    public ScheduledTask(NewsService service) {
+    public ScheduledTask(NewsService service, ArticleRepository repository) {
         this.service = service;
+        this.repository = repository;
     }
 
     @Scheduled( fixedDelayString = "${schedulerDelay.in.milliseconds:900000}",
@@ -37,7 +41,9 @@ public class ScheduledTask {
         r.getLanguages().add(Language.GERMAN);
 
         List<Article> articles = service.getAllArticles(r);
-
         LOG.info("The number of retrieved Articles: {}", articles.size());
+
+        repository.saveAll(articles);
+
     }
 }
