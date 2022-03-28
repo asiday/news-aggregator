@@ -1,96 +1,91 @@
 package dev.asida.crawler.services;
 
 import dev.asida.crawler.configurations.*;
+import dev.asida.crawler.converters.RequestContextConverter;
 import dev.asida.crawler.json.Article;
+import dev.asida.crawler.json.Response;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.time.LocalDateTime;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 public class NewsServiceTest {
 
-    @Autowired
     private NewsService service;
+    @Mock
+    private RequestContextConverter requestConverter;
+    @Mock
+    private RestTemplate restTemplate;
+
+    @BeforeEach
+    void init() {
+        MockitoAnnotations.openMocks(this);
+        RestTemplateBuilder builder = mock(RestTemplateBuilder.class);
+        when(builder.build()).thenReturn(restTemplate);
+        service = new NewsService(builder, requestConverter, "undefined");
+    }
 
     @Test
-    public void  getServiceTest(){
+    public void getServiceTest() {
         assertThat(service, is(notNullValue()));
     }
 
     @Test
-    public void getAllArticleWithOneParameterTest(){
+    public void getAllArticleWithOneParameterTest() {
+        // given
         List<Language> languages = new ArrayList<>();
         languages.add(Language.GERMAN);
-
         RequestContext r = new RequestContext();
         r.getLanguages().addAll(languages);
 
+        Response response = new Response();
+        // Returned response contains a list with one mock article.
+        response.setArticles(List.of(new Article()));
+        when(requestConverter.convert(eq(r))).thenReturn("language=de");
+        when(restTemplate.getForObject(eq("https://newsapi.org/v2/top-headlines?language=de&apiKey=undefined"), eq(Response.class))).thenReturn(response);
+        // when
         List<Article> result = service.getAllArticles(r);
+
+        // then
         assertThat(result, is(not(empty())));
+        assertThat(result.size(), is(equalTo(1)));
     }
 
     @Test
-    public void getAllArticlesWithCorrectRequestTest(){
+    public void getAllArticleWithWrongRequestTest() {
+        // given
         List<Language> languages = new ArrayList<>();
         languages.add(Language.GERMAN);
 
-        List<Country> countries = new ArrayList<>();
-        countries.add(Country.SWITZERLAND);
-
-        List<Category> categories = new ArrayList<>();
-        categories.add(Category.BUSINESS);
-
         List<Keyword> keywords = new ArrayList<>();
-        keywords.add(new Keyword("ist"));
-
-        LocalDateTime date = LocalDateTime.now().minusDays(1);
+        keywords.add(new Keyword("кириллица"));
 
         RequestContext r = new RequestContext();
-        r.getCountries().addAll(countries);
         r.getLanguages().addAll(languages);
         r.getKeywords().addAll(keywords);
-        r.setDateFrom(date);
 
+        Response response = new Response();
+        // Returned response contains a list with one mock article.
+        response.setArticles(Collections.emptyList());
+        when(requestConverter.convert(eq(r))).thenReturn("language=de&q=кириллица");
+        when(restTemplate.getForObject(eq("https://newsapi.org/v2/top-headlines?language=de&q=кириллица&apiKey=undefined"), eq(Response.class))).thenReturn(response);
+        // when
         List<Article> result = service.getAllArticles(r);
-        assertThat(result, is(not(empty())));
-    }
-
-    @Test
-    public void getAllArticleWithWrongRequestTest(){
-        List<Language> languages = new ArrayList<>();
-        languages.add(Language.GERMAN);
-
-        List<Country> countries = new ArrayList<>();
-        countries.add(Country.RUSSIA);
-
-        List<Category> categories = new ArrayList<>();
-        categories.add(Category.BUSINESS);
-
-        List<Keyword> keywords = new ArrayList<>();
-        keywords.add(new Keyword("Russland"));
-
-        List<Domain> domains = new ArrayList<>();
-        domains.add(new Domain("lenta.ru"));
-
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
-        LocalDateTime today = LocalDateTime.now();
-
-        RequestContext r = new RequestContext();
-        r.getCountries().addAll(countries);
-        r.getLanguages().addAll(languages);
-        r.getKeywords().addAll(keywords);
-        r.getDomains().addAll(domains);
-        r.setDateFrom(yesterday);
-        r.setDateTo(today);
-
-        List<Article> result = service.getAllArticles(r);
+        // then
         assertThat(result, is(empty()));
     }
 }

@@ -3,8 +3,6 @@ package dev.asida.crawler.dao;
 import dev.asida.crawler.json.Article;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-
 /**
  * This is Data Access Interface.
  * The CrudRepository of JpaRepository interface provides

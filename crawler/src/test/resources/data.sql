@@ -1,12 +1,12 @@
-INSERT INTO articles(author, title, description, url, url_to_image, published_at, content)
-VALUES ('Sullivan',
+INSERT INTO articles(id, author, title, description, url, url_to_image, published_at, content)
+VALUES (1,'Sullivan',
         '2022 NFL Free Agency tracker.',
         'Breaking down the latest rumors.',
         'https://www.cbssports.com',
         'https://sportshub.cbsistatic.com',
         '2022-03-15T14:35:03Z',
         'The dominos are continuing to fall across the NFL and the start of the legal tampering period.'),
-        ('Tyler',
+        (2, 'Tyler',
         '2022 NFL Free Agency tracker.',
         'Breaking down the latest rumors.',
         'https://www.cbssports.com',
