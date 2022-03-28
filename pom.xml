@@ -11,7 +11,7 @@
     <groupId>dev.asida</groupId>
     <artifactId>news-aggregator</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <name>news-aggregator</name>
     <url>http://maven.apache.org</url>
     <modules>

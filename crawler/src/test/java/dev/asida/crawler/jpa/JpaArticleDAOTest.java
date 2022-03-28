@@ -55,6 +55,7 @@ public class JpaArticleDAOTest {
     public void saveTest() {
         LocalDateTime today = LocalDateTime.now();
         Article article = new Article();
+        article.setId(1);
         article.setAuthor("author");
         article.setTitle("title");
         article.setDescription("description");
@@ -110,6 +111,5 @@ public class JpaArticleDAOTest {
     public void existsByIdTest() {
         getIds().forEach(id -> assertTrue(dao.existsById(id)));
     }
-
     
 }

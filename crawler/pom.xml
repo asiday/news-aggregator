@@ -5,10 +5,10 @@
     <parent>
         <groupId>dev.asida</groupId>
         <artifactId>news-aggregator</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
     <artifactId>crawler</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.3</version>
     <name>crawler</name>
     <description>SpringBoot module for the Crawler Service</description>
     <dependencies>
@@ -69,6 +69,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>9</source>
+                    <target>9</target>
+                </configuration>
             </plugin>
         </plugins>
         <resources>
