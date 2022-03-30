@@ -1,16 +1,23 @@
 # Getting Started
 
-### Reference Documentation
-For further reference, please consider the following sections:
+## How to build the image using the Dockerfile.
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.6.4/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.6.4/maven-plugin/reference/html/#build-image)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.6.4/reference/htmlsingle/#boot-features-jpa-and-spring-data)
-* [Spring Boot DevTools](https://docs.spring.io/spring-boot/docs/2.6.4/reference/htmlsingle/#using-boot-devtools)
+Here is used a multi-stage build in Dockerfile with two build stages:
+* First stage builds the maven jar file.
+* Second stage creates an image.
+   
+Here is the build command from the parent project `news-aggregator`:
 
-### Guides
-The following guides illustrate how to use some features concretely:
+```
+$ docker build 
+    -t asiday/news-crawler:0.0.1 .
+    -f crawler/Dockerfile  
+    --build-arg key=XXX
+```
 
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-
+Explanations:
+* `-t` : is a tage to give the name for the image.
+[DockerHub username]/[Repository name in DockerHub]:[Version]
+* `.`  : is a build context. Here is current directory.
+* `-f` : is the name and path to the Dockerfile
+* `--build-arg` : write the api-key.
