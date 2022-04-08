@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  crawler:
+    image: "asiday/news-crawler:0.0.3"
+    environment:
+      KEY: "${API_KEY}"
+      SPRING_DATASOURCE_URL: jdbc:mysql://app_db:3306/${MARIADB_DATABASE}
+      SPRING_DATASOURCE_USERNAME: "${MARIADB_USER}"
+      SPRING_DATASOURCE_PASSWORD: "${MARIADB_PASSWORD}"
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+      SPRING_DATASOURCE_INITIALIZATION-MODE: always
+    depends_on:
+      - maria_db
+    links:
+      - maria_db:app_db
+
+  service:
+    image: "asiday/news-service:0.0.1"
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://app_db:3306/${MARIADB_DATABASE}
+      SPRING_DATASOURCE_USERNAME: "${MARIADB_USER}"
+      SPRING_DATASOURCE_PASSWORD: "${MARIADB_PASSWORD}"
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+      SPRING_DATASOURCE_INITIALIZATION-MODE: always
+    depends_on:
+      - maria_db
+    links:
+      - maria_db:app_db
+
+  maria_db:
+    image: "mariadb:10.7.3"
+    volumes:
+      - ./scripts:/docker-entrypoint-initdb.d
+    environment:
+      MARIADB_DATABASE: "${MARIADB_DATABASE}"
+      MARIADB_USER: "${MARIADB_USER}"
+      MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
