@@ -1,5 +1,6 @@
 package dev.asida.crawler.schedule;
 
+import dev.asida.crawler.configurations.Country;
 import dev.asida.crawler.configurations.Language;
 import dev.asida.crawler.configurations.RequestContext;
 import dev.asida.crawler.dao.ArticleRepository;
@@ -38,7 +39,7 @@ public class ScheduledTask {
                 initialDelayString = "${initialDelay.in.milliseconds:5000}")
     public void requestArticles() {
         RequestContext r = new RequestContext();
-        r.getLanguages().add(Language.GERMAN);
+        r.getCountries().add(Country.SWITZERLAND);
 
         List<Article> articles = service.getAllArticles(r);
         LOG.info("The number of retrieved Articles: {}", articles.size());
