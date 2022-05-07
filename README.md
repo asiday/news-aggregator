@@ -4,13 +4,13 @@
 
 This application is my so called "pet project" with a main goal to learn modern Java Enterprise development.
 
-The idea of the application is on one side to collect the news into a databse, and on the other side to make this collected news available for requesting by some REST service. The REST service is ready to be used as a backend for e.g some web or mobile application.
+The idea of the application is to collect the news into a database on the one side and on the other side to make this collected news available for requesting by some REST service. The REST service is ready to be used as a backend for e.g some web or mobile application.
 
-This application and all the collected data are used for the personal learning purposes only and are not a subject for commercial use.
+This application and all the collected data are used only for the personal learning purposes and are not a subject for commercial use.
 
 ## Application components
 
-This application consists of two modules: the crawler itself and the REST service. Both are built as a Spring Boot services and use shared database instance, in my case it is MariaDB.
+This application consists of two modules: the crawler itself and the REST service. Both are built as a Spring Boot services and use shared database instance, in this case it is MariaDB.
 
 The crawler is responsible for running a scheduler, that is searching through news sources (e.g. [News API](https://newsapi.org/)). The retrieved articles are persisted in the database.
 
