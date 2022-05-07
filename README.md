@@ -2,47 +2,63 @@
 
 ## About
 
-This application was created as a part of learning process for creating web-based enterprise application.
+This application is my so called "pet project" with a main goal to learn modern Java Enterprise development.
 
-When the application is started it runs a scheduled task, that is searching through every article registered
-by News API resource and returns news articles according to the given parameters.
-Json responses, that we've got from the News API, are converted into a Java class called Article 
-and are ready to be saved in the database. 
-Each article has a generated ID value that makes it possible not to save article duplicates.
-The REST web service is using many of the spring features like auto wiring and dependency injection.
-Persistence Layer is using Spring Data, that turns classes into database table rows and back again,
-mapping domain classes to DB tables.
-The goal of the application is a possibility to interact with articles, that are saved in existing relational database.
+The idea of the application is on one side to collect the news into a databse, and on the other side to make this collected news available for requesting by some REST service. The REST service is ready to be used as a backend for e.g some web or mobile application.
 
-## Main elements
+This application and all the collected data are used for the personal learning purposes only and are not a subject for commercial use.
 
-News aggregator contains of three parts:
+## Application components
+
+This application consists of two modules: the crawler itself and the REST service. Both are built as a Spring Boot services and use shared database instance, in my case it is MariaDB.
+
+The crawler is responsible for running a scheduler, that is searching through news sources (e.g. [News API](https://newsapi.org/)). The retrieved articles are persisted in the database.
+
+The REST WebService retrieves news articles from the database using Spring Data and returns them in JSON format.
+
+## Technical description
+
+### Overview 
+As mentioned above, the news aggregator contains of three parts:
 + crawler 
   + scheduled task with get request from news-api:
     <https:newsapi.org/v2/top-headlines?country=ch&apiKey=XXX>
   + requested json files are saved in mariadb as converted entities
 + service 
-  + get entities from existing mariadb
-  + return them as json files under the link
-    + localhost:8080/articles
-+ mariadb
+  + reads entities from the database
+  + provides API to request the news articles, e.g. under ***\<service-url\>:\<service-posrt\>/articles***
++ MariaDB
+  + the database instance
 
 ![Image](architecture.drawio.png)
 
-## Instructions to Run application.
-The application uses docker-compose.yml file to run 
-three images of crawler/service/mariadb as separate docker containers.
-+ Add environment variables in Compose file
-  + Save all sensitive information such as api key in .env file:
-    ```console
+The crawler is supposed to work with different news sources. In the first version, it uses the News API which requires an [API key](https://newsapi.org/register). Please, make sure to register for an Api KEY to be able to start this application properly.
+
+### Docker images 
+
+I use Docker to deploy and run my applications, so I create docker images of my Spring Boot application and make this images available on the Docker Hub.
++ The crawler image on Docker Hub: [ссылка](aksjdhfgkasdf)
++ The REST Service on Docker Hub:  [ссылка](aksjdhfgkasdf)
+
+
+### How to run the application
+
+The application uses docker-compose.yml file to run all three components (the crawler, the service and the MariaDB) as docker containers. The ***.env*** environment file with a configuration properies is required.
+
+Add environment variables in Compose file. Save all sensitive information such as api key in .env file:
+
+```console
       news-aggregator: ~$ cat .env 
     
       API_KEY=XXX 
-      MARIADB_USER=user
+      MARIADB_USER=username
       MARIADB_PASSWORD=password
-      ```
-  + Put placeholders at the approprate places:
-    ```console
+      MARIADB_ROOT_PASSWORD=rootpassword
+```
+
+The above values configured in the ***.env*** file are set at the approprate places in the ***docker-compose.yml*** at the start time:
+
+```console
       news-aggregator: ~$ cat docker-compose.yml
     
       version: "3.7"
@@ -58,9 +74,11 @@ three images of crawler/service/mariadb as separate docker containers.
           MARIADB_USER: "${MARIADB_USER}"
           MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
       ...
-      ```
-  + Verify this with the config command, which prints your resolved application config to the terminal:
-      ```console
+```
+
+You can verify this with the config command, which prints your resolved application config to the terminal:
+
+```console
       news-aggregator: ~$ docker-compose config
     
       version: "3.7"
@@ -68,14 +86,26 @@ three images of crawler/service/mariadb as separate docker containers.
       ...
          environment:
           KEY: XXX
-          SPRING_DATASOURCE_USERNAME: user
+          SPRING_DATASOURCE_USERNAME: username
           SPRING_DATASOURCE_PASSWORD: password
       ...
         maria_db:
          environment:
-          MARIADB_USER: user
+          MARIADB_USER: username
           MARIADB_PASSWORD: password
       ...
-      ```
-+ Run the docker compose with following command. You do not need to mention .env file.
-  + $ docker-compose up -d
+```
+
+By default, the REST service runs on the local port ```8080```. You can override this behaviour in the ```docker-compose.yml``` in the service section:
+
+```console
+  service:
+    image: "asiday/news-service:0.0.1"
+    ports:
+      - "[put your host port here]:8080"
+```
+
+To start the application, just run the docker compose as follows:
+```console
+      news-aggregator: ~$ docker-compose up -d
+```
