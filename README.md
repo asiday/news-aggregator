@@ -48,49 +48,63 @@ The application uses docker-compose.yml file to run all three components (the cr
 Add environment variables in Compose file. Save all sensitive information such as api key in .env file:
 
 ```console
-      news-aggregator: ~$ cat .env 
+news-aggregator: ~$ cat .env 
     
-      API_KEY=XXX 
-      MARIADB_USER=username
-      MARIADB_PASSWORD=password
-      MARIADB_ROOT_PASSWORD=rootpassword
+API_KEY=XXX 
+MARIADB_USER=username
+MARIADB_PASSWORD=password
+MARIADB_ROOT_PASSWORD=rootpassword
 ```
 
 The above values configured in the ***.env*** file are set at the approprate places in the ***docker-compose.yml*** at the start time:
 
 ```console
-      news-aggregator: ~$ cat docker-compose.yml
+news-aggregator: ~$ cat docker-compose.yml
     
-      version: "3.7"
-       services:
-      ...
-         environment:
-          KEY: "${API_KEY}"
-          SPRING_DATASOURCE_USERNAME: "${MARIADB_USER}"
-          SPRING_DATASOURCE_PASSWORD: "${MARIADB_PASSWORD}"
-      ...
-        maria_db:
-         environment:
-          MARIADB_USER: "${MARIADB_USER}"
-          MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
-      ...
+services:
+  crawler:
+    ...
+    environment:
+      KEY: "${API_KEY}"
+      SPRING_DATASOURCE_URL: jdbc:mysql://app_db:3306/${MARIADB_DATABASE}
+      SPRING_DATASOURCE_USERNAME: "${MARIADB_USER}"
+      SPRING_DATASOURCE_PASSWORD: "${MARIADB_PASSWORD}"
+    ...
+
+  service:
+    ...
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://app_db:3306/${MARIADB_DATABASE}
+      SPRING_DATASOURCE_USERNAME: "${MARIADB_USER}"
+      SPRING_DATASOURCE_PASSWORD: "${MARIADB_PASSWORD}"
+   ...   
+  
+  maria_db:
+    ...
+    environment:
+      MARIADB_DATABASE: "${MARIADB_DATABASE}"
+      MARIADB_USER: "${MARIADB_USER}"
+      MARIADB_PASSWORD: "${MARIADB_PASSWORD}"
+      MARIADB_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
 ```
 
 You can verify this with the config command, which prints your resolved application config to the terminal:
 
 ```console
-      news-aggregator: ~$ docker-compose config
+news-aggregator: ~$ docker-compose config
     
-      version: "3.7"
-       services:
-      ...
-         environment:
-          KEY: XXX
-          SPRING_DATASOURCE_USERNAME: username
-          SPRING_DATASOURCE_PASSWORD: password
-      ...
-        maria_db:
-         environment:
+version: "3.7"
+services:
+  ...
+  crawler:
+  ...
+    environment:
+      KEY: XXX
+      SPRING_DATASOURCE_USERNAME: username
+      SPRING_DATASOURCE_PASSWORD: password
+  ...
+    maria_db:
+      environment:
           MARIADB_USER: username
           MARIADB_PASSWORD: password
       ...
@@ -99,13 +113,13 @@ You can verify this with the config command, which prints your resolved applicat
 By default, the REST service runs on the local port ```8080```. You can override this behaviour in the ```docker-compose.yml``` in the service section:
 
 ```console
-  service:
-    image: "asiday/news-service:0.0.1"
-    ports:
-      - "[put your host port here]:8080"
+service:
+  image: "asiday/news-service:0.0.1"
+  ports:
+    - "[put your host port here]:8080"
 ```
 
 To start the application, just run the docker compose as follows:
 ```console
-      news-aggregator: ~$ docker-compose up -d
+news-aggregator: ~$ docker-compose up -d
 ```
