@@ -30,8 +30,6 @@ As mentioned above, the news aggregator contains of three parts:
 + MariaDB
   + the database instance
 
-![Image](architecture.drawio.png)
-
 The crawler is supposed to work with different news sources. In the first version, it uses the News API which requires an [API key](https://newsapi.org/register). Please, make sure to register for an Api KEY to be able to start this application properly.
 
 ### Docker images 
