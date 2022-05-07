@@ -50,7 +50,8 @@ Add environment variables in Compose file. Save all sensitive information such a
 ```console
 news-aggregator: ~$ cat .env 
     
-API_KEY=XXX 
+API_KEY=XXX
+MARIADB_DATABASE=news-aggregator
 MARIADB_USER=username
 MARIADB_PASSWORD=password
 MARIADB_ROOT_PASSWORD=rootpassword
@@ -93,21 +94,31 @@ You can verify this with the config command, which prints your resolved applicat
 ```console
 news-aggregator: ~$ docker-compose config
     
-version: "3.7"
 services:
-  ...
   crawler:
-  ...
+    ...
     environment:
-      KEY: XXX
-      SPRING_DATASOURCE_USERNAME: username
-      SPRING_DATASOURCE_PASSWORD: password
-  ...
-    maria_db:
-      environment:
-          MARIADB_USER: username
-          MARIADB_PASSWORD: password
-      ...
+      KEY: "XXX"
+      SPRING_DATASOURCE_URL: jdbc:mysql://app_db:3306/news-aggregator
+      SPRING_DATASOURCE_USERNAME: "username"
+      SPRING_DATASOURCE_PASSWORD: "password"
+    ...
+
+  service:
+    ...
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://app_db:3306/news-aggregator
+      SPRING_DATASOURCE_USERNAME: "username"
+      SPRING_DATASOURCE_PASSWORD: "password"
+   ...   
+  
+  maria_db:
+    ...
+    environment:
+      MARIADB_DATABASE: "news-aggregator"
+      MARIADB_USER: "username"
+      MARIADB_PASSWORD: "password"
+      MARIADB_ROOT_PASSWORD: "rootpassword"
 ```
 
 By default, the REST service runs on the local port ```8080```. You can override this behaviour in the ```docker-compose.yml``` in the service section:
