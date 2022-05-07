@@ -34,7 +34,9 @@ The crawler is supposed to work with different news sources. In the first versio
 
 ### Docker images 
 
-I use Docker to deploy and run my applications, so I create docker images of my Spring Boot application and make this images available on the Docker Hub.
+Docker is used here to build, validate and deploy the applications.
+Created docker images of my Spring Boot application are shared in the Docker Hub registry.
+
 + The crawler image on Docker Hub: [news-crawler](https://hub.docker.com/repository/docker/asiday/news-crawler)
 + The REST Service on Docker Hub:  [news-service](https://hub.docker.com/repository/docker/asiday/news-service)
 
