@@ -42,7 +42,7 @@ public class NewsService {
      */
     public List<Article> getAllArticles(RequestContext r) {
         String context = converter.convert(r);
-        String url = String.format("https://newsapi.org/v2/top-headlines?%s&apiKey=%s", context, key);
+        String url = String.format("https://newsapi.org/v2/everything?%s&apiKey=%s", context, key);
         Response response = restTemplate.getForObject(url, Response.class);
         return response.getArticles();
     }
